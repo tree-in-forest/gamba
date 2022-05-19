@@ -21,6 +21,7 @@
         input { font-size: 2em; }
         input[type=checkbox] { transform: scale(2); }
         label { font-size: 1.5em; }
+        pre { margin: 0; }
         </style>
     </head>
 <body>
@@ -132,7 +133,7 @@ function gamble() {
         logs.innerHTML = "<pre>... spent <b>"
             + spent_to_win.toString().padStart(5, ' ')
             + "</b>🍌 to win <b>"
-            + (gain+1).toString().padStart(5, ' ')
+            + (gain+spent_to_win).toString().padStart(5, ' ')
             + "</b>🍌</pre>"
             + logs.innerHTML;
         spent_to_win = 0;
