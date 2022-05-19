@@ -125,22 +125,23 @@ function gamble() {
     balance_div.innerHTML = balance;
 
     if (gain < 0) {
-        balance_div.innerHTML += " (you lost " + Math.abs(gain) + "🍌)";
+        balance_div.innerHTML += " (you lost " + Math.abs(gain) + "🍌";
         balance_div.style.color = "red";
     } else if (gain > 0) {
-        balance_div.innerHTML += " (you have won " + gain + "🍌)";
+        balance_div.innerHTML += " (you have won " + gain + "🍌";
         balance_div.style.color = "green";
         logs.innerHTML = "<pre>... spent <b>"
             + spent_to_win.toString().padStart(5, ' ')
-            + "</b>🍌 to win <b>"
-            + (gain+spent_to_win).toString().padStart(5, ' ')
+            + "</b>🍌 to gain <b>"
+            + gain.toString().padStart(5, ' ')
             + "</b>🍌</pre>"
             + logs.innerHTML;
         spent_to_win = 0;
     } else {
-        balance_div.innerHTML += " (you have won literally nothning)";
+        balance_div.innerHTML += " (you have won literally nothning";
         balance_div.style.color = "white";
     }
+    balance_div.innerHTML += ", " + (gain+bet) + " - " + bet + " = " + gain + ")";
 
     gambled += bet;
     profit += gain;
