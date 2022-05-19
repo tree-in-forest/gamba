@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>A demonstration of gambling</title>
+        <style>
+        body {
+            background-color: powderblue;
+            font-family: sans-serif;
+            text-align: center;
+        }
+        button { font-size: 2em; }
+        h1 { color: blue; font-size: 4em; }
+        div {
+            font-family: sans-serif;
+            font-size: 2em;
+        }
+        p {
+            font-family: sans-serif;
+            font-size: 1.5em;
+        }
+        input { font-size: 2em; }
+        input[type=checkbox] { transform: scale(2); }
+        label { font-size: 1.5em; }
+        </style>
+    </head>
+<body>
+
+<h1>A demonstration of gambling</h1>
+
+<div>account balance: <tt id="balance">1000</tt></div>
+<br>
+
+<div>gambled: <tt id="gambled">0</tt></div>
+<br>
+
+<div>absolute profit: <tt id="absolute_profit">0</tt></div>
+<br>
+
+<div>relative profit: <tt id="relative_profit">N/A</tt></div>
+<br>
+
+<input id="bet" type="number" oninput="bet_change()" value="1" min="1" size=5>
+<button id="gamble_button" onclick="repeat_gamble()">gamble 1🍌</button>
+<br>
+
+<input id="auto" type="checkbox" name="auto" onclick="auto()">
+<label for="auto"> auto gamble mode</label>
+<br>
+<input id="auto_win" type="checkbox" name="auto_win" onclick="auto_win()">
+<label for="auto_win"> "spin" until you win </label>
+
+
+<p id="logs">--- end of logs ---</p>
+
+<script defer>
+var
+    balance = 10000,
+    spent_to_win = 0,
+    gambled = 0,
+    profit = 0;
+
+const 
+    balance_div = document.getElementById("balance"),
+    gambled_div = document.getElementById("gambled"),
+    absolute_profit_div = document.getElementById("absolute_profit"),
+    relative_profit_div = document.getElementById("relative_profit"),
+    bet_input = document.getElementById("bet"),
+    gamble_button = document.getElementById("gamble_button"),
+    auto_checkbox = document.getElementById("auto"),
+    auto_win_checkbox = document.getElementById("auto_win"),
+    logs = document.getElementById("logs");
+
+balance_div.innerHTML = balance;
+bet_input.value = 1;
+
+function bet_change() {
+  gamble_button.innerHTML = "gamble " + bet_input.value + "🍌";
+}
+
+function auto() {
+    auto_win_checkbox.checked = false;
+}
+
+function auto_win() {
+    auto_checkbox.checked = false;
+}
+
+function random() {
+    const [p1, p2, p3, p4] = [.00001, .0001, .005, 0.02];
+    let r = Math.random();
+
+    if (r < p1) {
+        return 10000;
+    } else if (r < p1+p2) {
+        return 1000;
+    } else if (r < p1+p2+p3) {
+        return 100;
+    } else if (r < p1+p2+p3+p4) {
+        return 10;
+    } else {
+        return 0;
+    }
+}
+
+function repeat_gamble() {
+    gamble();
+    if (auto_checkbox.checked) {
+        setTimeout(repeat_gamble, 1);
+    } else if (auto_win_checkbox.checked && spent_to_win > 0) {
+        setTimeout(repeat_gamble, 1);
+    }
+}
+
+function gamble() {
+    let bet = parseInt(bet_input.value);
+    spent_to_win += bet;
+
+    let gain = -bet;
+    for (let i = 0; i < bet; i++) {
+        gain += random()
+    }
+
+    balance += gain
+    balance_div.innerHTML = balance;
+
+    if (gain < 0) {
+        balance_div.innerHTML += " (you lost " + Math.abs(gain) + "🍌)";
+        balance_div.style.color = "red";
+    } else if (gain > 0) {
+        balance_div.innerHTML += " (you have won " + gain + "🍌)";
+        balance_div.style.color = "green";
+        logs.innerHTML = "<pre>... spent <b>"
+            + spent_to_win.toString().padStart(5, ' ')
+            + "</b>🍌 to win <b>"
+            + (gain+1).toString().padStart(5, ' ')
+            + "</b>🍌</pre>"
+            + logs.innerHTML;
+        spent_to_win = 0;
+    } else {
+        balance_div.innerHTML += " (you have won literally nothning)";
+        balance_div.style.color = "white";
+    }
+
+    gambled += bet;
+    profit += gain;
+    gambled_div.innerHTML = gambled + "🍌";
+    absolute_profit_div.innerHTML = profit + "🍌";
+    relative_profit_div.innerHTML = (100*profit/gambled).toFixed(2) + "%";
+    if (profit < 0) {
+        color = "red";
+    } else if (profit == 0) {
+        color = "white";
+    } else {
+        color = "green";
+    }
+    absolute_profit_div.style.color = color;
+    relative_profit_div.style.color = color;
+}
+</script>
+
+</body>
+</html>
